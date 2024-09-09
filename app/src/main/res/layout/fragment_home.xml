@@ -4,19 +4,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/text_home"
+
+
+
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView4"
+            style="@style/AppTheme"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:checkable="true"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView1"
+            tools:layout_editor_absoluteX="16dp"
+            >
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="247dp"
+            android:layout_height="96dp"
+            android:text="TextView" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView1"
+        style="@style/AppTheme"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="150dp"
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp">
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
