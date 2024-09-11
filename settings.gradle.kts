@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "FitnessApp"
+rootProject.name = "TypeSafeComposeNavigation"
 include(":app")
  
