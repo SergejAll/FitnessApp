@@ -2,27 +2,114 @@ package com.with.fitnessApp.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.composable
 import com.with.fitnessApp.Settings
+import com.with.fitnessApp.models.Workout
+import androidx.compose.material3.Card
+import androidx.compose.foundation.layout.Box as Box1
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavController){
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Button(onClick = {
-            navController.navigate(Settings)
-        }) {
-            Text(text = "Go to screen B")
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val workouts = listOf(
+        Workout(
+            id = 1,
+            title = "Erster"
+        ),
+        Workout(
+            id = 2,
+            title = "Zweiter"
+        )
+    )
+
+
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .padding(bottom = 100.dp)
+        ,
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Home")},
+                navigationIcon = {
+
+                },
+                actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Test"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+                )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /*TODO*/ },
+                ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Neuen Plan hinzufügen"
+                )
+            }
         }
+    ) { values ->
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+            .padding(values),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            if(workouts.isNotEmpty()){
+                items(workouts.count()){
+                    val title = workouts[it].title
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .padding(16.dp),
+                    ) {
+                        Text(text = "Item $title")
+                    }
+                }
+            }
+
+
+
+        }
+
     }
+
 }
+
+

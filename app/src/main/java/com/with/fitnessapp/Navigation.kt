@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
@@ -20,7 +21,8 @@ import com.with.fitnessApp.screen.Calender
 import com.with.fitnessApp.screen.Home
 import com.with.fitnessApp.screen.Profile
 import com.with.fitnessApp.screen.Settings
-import com.with.fitnessApp.ui.theme.TypeSafeComposeNavigationTheme
+import com.with.fitnessApp.screen.Settings
+import com.with.fitnessApp.ui.theme.AppTheme
 
 import kotlinx.serialization.Serializable
 
@@ -28,7 +30,7 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun Navigation(navController: NavHostController){
-    TypeSafeComposeNavigationTheme {
+    AppTheme {
         NavHost( navController = navController, startDestination = Home){
             composable<Home>(){
                 Home(navController)
@@ -67,7 +69,7 @@ object Settings
 object Calender
 
 
-fun CreateBottomNavigationItems(): List<BottomNavigationItem>{;
+fun createBottomNavigationItems(): List<BottomNavigationItem>{;
 
     val result: List<BottomNavigationItem> = listOf(
         BottomNavigationItem(
