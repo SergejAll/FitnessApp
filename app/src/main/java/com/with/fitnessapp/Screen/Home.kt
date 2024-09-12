@@ -30,6 +30,8 @@ import androidx.navigation.compose.composable
 import com.with.fitnessApp.Settings
 import com.with.fitnessApp.models.Workout
 import androidx.compose.material3.Card
+import com.with.fitnessApp.components.cards.MyElevatedCardBasic
+import com.with.fitnessApp.components.cards.MyFilledCardBasic
 import androidx.compose.foundation.layout.Box as Box1
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,14 +95,7 @@ fun Home(navController: NavController){
             if(workouts.isNotEmpty()){
                 items(workouts.count()){
                     val title = workouts[it].title
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(150.dp)
-                            .padding(16.dp),
-                    ) {
-                        Text(text = "Item $title")
-                    }
+                    MyFilledCardBasic("Item $title")
                 }
             }
 
