@@ -1,27 +1,26 @@
 package com.with.fitnessApp
 
-import android.graphics.drawable.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.serialization.generateRouteWithArgs
-import androidx.navigation.toRoute
 import com.with.fitnessApp.models.BottomNavigationItem
+import com.with.fitnessApp.models.Plan
 import com.with.fitnessApp.screen.Calender
 import com.with.fitnessApp.screen.Home
-import com.with.fitnessApp.screen.Profile
 import com.with.fitnessApp.screen.Settings
-import com.with.fitnessApp.screen.Settings
+import com.with.fitnessApp.screen.WorkoutDetails
 import com.with.fitnessApp.ui.theme.AppTheme
 
 import kotlinx.serialization.Serializable
@@ -44,6 +43,9 @@ fun Navigation(navController: NavHostController){
             }
             composable<Calender>{
                Calender(navController)
+            }
+            composable<WorkoutDetails>{
+                WorkoutDetails(navController)
             }
 
 
@@ -68,32 +70,58 @@ object Settings
 @Serializable
 object Calender
 
+@Serializable
+object WorkoutDetails
+
+
 
 fun createBottomNavigationItems(): List<BottomNavigationItem>{;
 
     val result: List<BottomNavigationItem> = listOf(
         BottomNavigationItem(
-            name = "Home",
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home,
+            name = "Pläne",
+            selectedIcon = Icons.Filled.Apps,
+            unselectedIcon = Icons.Outlined.Apps,
             hasNews = false,
             route = Home
         ),
         BottomNavigationItem(
             name = "Calender",
-            selectedIcon = Icons.Filled.Person,
-            unselectedIcon = Icons.Outlined.Person,
+            selectedIcon = Icons.Filled.CalendarMonth,
+            unselectedIcon = Icons.Outlined.CalendarMonth,
             hasNews = true,
             badgeCount = 25,
             route = Calender
         ),
         BottomNavigationItem(
-            name = "Settings",
-            selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings,
+            name = "Profil",
+            selectedIcon = Icons.Filled.Person,
+            unselectedIcon = Icons.Outlined.Person,
             hasNews = true,
             route = Settings
         ),
     )
     return  result;
 }
+
+fun createWorkoutsItems(): List<Plan>{;
+
+    val result: List<Plan> = listOf(
+        Plan(
+            id = 1,
+            title = "Erster",
+            compose = WorkoutDetails
+
+        ),
+        Plan(
+            id = 2,
+            title = "Zweiter",
+            compose = WorkoutDetails
+        )
+    )
+    return  result;
+}
+
+
+
+
