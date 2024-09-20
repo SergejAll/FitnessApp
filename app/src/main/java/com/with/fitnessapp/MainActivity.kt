@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.*
@@ -15,10 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import com.with.fitnessApp.ui.theme.AppTheme
-import com.with.fitnessApp.ui.theme.AppTheme as appTheme
-
+import com.with.fitnessApp.ui.theme.FitnessAppTheme
 
 
 
@@ -37,7 +33,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun fitnessApp() {
     val navController = rememberNavController()
-    val scope = rememberCoroutineScope()
 
     //Create list of Navigations
     val items = createBottomNavigationItems()
@@ -45,9 +40,8 @@ fun fitnessApp() {
     var selectedItemIndex by rememberSaveable {
         mutableIntStateOf(0)
     }
-    AppTheme {
+    FitnessAppTheme {
         Scaffold(
-
             bottomBar = {
                 NavigationBar(){
                     items.forEachIndexed {index, item ->

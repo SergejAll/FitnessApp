@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.composable
 import com.with.fitnessApp.Calender
+import com.with.fitnessApp.components.textfields.FitTextHeader
 import com.with.fitnessApp.screen.Calender
 import com.with.fitnessApp.screen.WorkoutDetails
 
@@ -51,14 +52,7 @@ fun MyClickableCard(title: String, description: String, navController: NavContro
                     .height(64.dp),
 
             ){
-                Text(
-                    text = title,
-                    modifier = Modifier
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                FitTextHeader(title)
             }
 
             //Body

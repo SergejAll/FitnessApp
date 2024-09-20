@@ -47,7 +47,7 @@ fun Calender(navController: NavController){
             .padding(bottom = 100.dp),
         topBar = {
             TopAppBar(
-                title = { Text(text = "Plan") },
+                title = { Text(text = "Calendar") },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(

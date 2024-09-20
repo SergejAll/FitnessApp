@@ -24,7 +24,7 @@ fun Settings(navController: NavController){
                 age = 25
             ))
         }) {
-            Text(text = "Go to screen B")
+            Text(text = "Not Implemented")
         }
     }
 }
