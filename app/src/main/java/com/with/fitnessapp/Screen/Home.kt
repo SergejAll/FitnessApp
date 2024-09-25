@@ -22,7 +22,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-import com.with.fitnessApp.components.cards.MyClickableCard
+import com.with.fitnessApp.components.cards.FitClickableCard
 import com.with.fitnessApp.createWorkoutsItems
 
 import com.with.fitnessApp.models.Plan
@@ -87,7 +87,7 @@ fun Home(navController: NavController){
             if(workouts.isNotEmpty()){
                 items(workouts.count()){
                     val title = workouts[it].title
-                    MyClickableCard("Item $title", "Description $title", navController, workouts[it].compose)
+                    FitClickableCard("Item $title", "Description $title", navController, workouts[it].compose)
                 }
             }
 

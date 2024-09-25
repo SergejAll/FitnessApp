@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.material3.Text
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.*
@@ -14,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import com.with.fitnessApp.ui.theme.FitnessAppTheme
 
 
@@ -42,8 +44,11 @@ fun fitnessApp() {
     }
     FitnessAppTheme {
         Scaffold(
+            contentColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
             bottomBar = {
-                NavigationBar(){
+                NavigationBar(
+                ){
                     items.forEachIndexed {index, item ->
                         NavigationBarItem(selected = selectedItemIndex == index,
 

@@ -1,5 +1,6 @@
 package com.with.fitnessApp
 
+import androidx.compose.foundation.background
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ShowChart
 import androidx.compose.material.icons.automirrored.outlined.ShowChart
@@ -17,7 +18,9 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.ShowChart
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -36,7 +39,10 @@ import kotlinx.serialization.Serializable
 @Composable
 fun Navigation(navController: NavHostController){
     FitnessAppTheme {
-        NavHost( navController = navController, startDestination = Home){
+        NavHost(
+            navController = navController, startDestination = Home
+
+        ){
             composable<Home>(){
                 Home(navController)
             }
@@ -60,6 +66,9 @@ fun Navigation(navController: NavHostController){
 
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////// Create objects //////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 @Serializable
 object Home
@@ -80,6 +89,9 @@ object Calender
 object WorkoutDetails
 
 
+////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// Fill test objects //////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
 
 fun createBottomNavigationItems(): List<BottomNavigationItem>{;
 
