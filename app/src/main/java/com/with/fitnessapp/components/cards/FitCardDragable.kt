@@ -1,92 +1,60 @@
 package com.with.fitnessApp.components.cards
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
-import androidx.compose.foundation.gestures.scrollBy
+
+import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import com.with.fitnessApp.api.draganddrop.rememberDragDropListState
+import com.with.fitnessApp.functions.draganddrop.DragDropColumn
 import com.with.fitnessApp.models.Workout
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+
 
 @Composable
-fun FitCardDragable(items: List<Workout>,
-                    onMove: (Int, Int) -> Unit,
-                    modifier: Modifier = Modifier){
+fun FitCardWorkoutDragable(
+    itemsStateFlow: MutableStateFlow<List<Workout>>,
+    onItemClicked : (Workout) -> Unit = {},
+    paddingValues: PaddingValues = PaddingValues(),
+) {
+    fun swapItems(from: Int, to: Int) {
+        itemsStateFlow.update {
+            val newList = it.toMutableList()
+            val fromItem = it[from].copy()
+            val toItem = it[to].copy()
+            newList[from] = toItem
+            newList[to] = fromItem
 
+            println("it: $it, newList: $newList")
 
-    val scope = rememberCoroutineScope()
-    var overScrollJob by remember { mutableStateOf<Job?>(null) }
-    val dragDropListState = rememberDragDropListState(onMove = onMove)
+            newList
+        }
+    }
 
-    LazyColumn(
-        modifier = modifier
-            .pointerInput(Unit) {
-                detectDragGesturesAfterLongPress(
-                    onDrag = { change, offset ->
-                        change.consume()
-                        dragDropListState.onDrag(offset = offset)
-
-                        if (overScrollJob?.isActive == true)
-                            return@detectDragGesturesAfterLongPress
-
-                        dragDropListState
-                            .checkForOverScroll()
-                            .takeIf { it != 0f }
-                            ?.let {
-                                overScrollJob = scope.launch {
-                                    dragDropListState.lazyListState.scrollBy(it)
-                                }
-                            } ?: kotlin.run { overScrollJob?.cancel() }
-                    },
-                    onDragStart = { offset -> dragDropListState.onDragStart(offset) },
-                    onDragEnd = { dragDropListState.onDragInterrupted() },
-                    onDragCancel = { dragDropListState.onDragInterrupted() }
-                )
-            }
-            .fillMaxSize()
-            .padding(top = 16.dp, end = 16.dp),
-        state = dragDropListState.lazyListState
-    ) {
-        itemsIndexed(items) { index, item ->
-            Card(
+    DragDropColumn(
+        items = itemsStateFlow.collectAsState().value,
+        onSwap = ::swapItems,
+    ) { item ->
+        Card(
+            modifier = Modifier
+                .clickable {
+                    onItemClicked(item)
+                }
+        ) {
+            Text(
+                text = item.id.toString(),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .composed {
-                        val offsetOrNull = dragDropListState.elementDisplacement.takeIf {
-                            index == dragDropListState.currentIndexOfDraggedItem
-                        }
-                        Modifier.graphicsLayer {
-                            translationY = offsetOrNull ?: 0f
-                        }
-                    }
-                    .background(MaterialTheme.colorScheme.background)
                     .fillMaxWidth()
-                    .height(150.dp)
-                    .padding(8.dp),
-            ) {
-                Text(
-                    text = item.id.toString(),
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily.Serif
-                )
-            }
-
-            Spacer(modifier = Modifier.height(18.dp))
+                    .padding(16.dp),
+            )
         }
     }
 }
