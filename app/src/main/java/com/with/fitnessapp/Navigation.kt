@@ -134,13 +134,13 @@ fun createWorkoutsItems(): List<Plan>{;
     val result: List<Plan> = listOf(
         Plan(
             id = 1,
-            title = "Erster",
+            title = "Seek",
             compose = WorkoutDetails
 
         ),
         Plan(
             id = 2,
-            title = "Zweiter",
+            title = "Reiterate",
             compose = WorkoutDetails
         )
     )

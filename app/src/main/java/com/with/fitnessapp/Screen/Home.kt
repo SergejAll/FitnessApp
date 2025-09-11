@@ -87,7 +87,7 @@ fun Home(navController: NavController){
             if(workouts.isNotEmpty()){
                 items(workouts.count()){
                     val title = workouts[it].title
-                    FitClickableCard("Item $title", "Description $title", navController, workouts[it].compose)
+                    FitClickableCard("Test $title", "Description $title", navController, workouts[it].compose)
                 }
             }
 
