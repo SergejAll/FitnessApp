@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">FitnessApp</string>
+    <string name="plans">Trainingspläne</string>
+    <string name="calendar">Kalender</string>
+    <string name="graphs">Graphen</string>
+    <string name="profile">Profil</string>
+    <string name="add_plan">Neuen Plan hinzufügen</string>
+    <string name="edit">Bearbeiten</string>
 </resources>

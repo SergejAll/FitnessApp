@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.TypeSafeComposeNavigation" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Compose nutzt diese Theme-Referenz -->
+    <style name="Theme.FitnessApp" parent="Theme.Material3.Dark">
+        <!-- Keine Farben hier definieren, das kommt in Compose -->
+    </style>
+
 </resources>

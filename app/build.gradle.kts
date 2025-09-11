@@ -74,7 +74,23 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.material.icons.extended)
     implementation("androidx.compose.material:material-icons-extended-android:1.7.2")
-
     implementation ("androidx.compose.material3:material3")
     implementation ("androidx.compose.material:material")
+    implementation("androidx.compose.material3:material3:1.2.0")
+
+
+    // Jetpack Compose Material3
+    implementation("androidx.compose.material3:material3:1.2.1")
+
+    // Basis für Compose
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.compose.ui:ui:1.6.7")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.6.7")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.6.7")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+
+    implementation("com.google.android.material:material:1.12.0")
+
 }
