@@ -44,7 +44,9 @@ fun PlansScreen() {
     Scaffold(
         topBar = { AppHeader("Trainingspläne") { /* Edit click */ } },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* Add Plan: plans.add("New Plan ${plans.size + 1}") */ }) {
+            FloatingActionButton(
+                modifier = Modifier.padding(bottom = 80.dp),
+                onClick = { /* Add Plan: plans.add("New Plan ${plans.size + 1}") */ }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Plan")
             }
         }

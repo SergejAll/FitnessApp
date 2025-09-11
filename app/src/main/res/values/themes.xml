@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Compose nutzt diese Theme-Referenz -->
-    <style name="Theme.FitnessApp" parent="Theme.Material3.Dark">
+    <style name="Theme.FitnessApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Keine Farben hier definieren, das kommt in Compose -->
     </style>
 
