@@ -73,8 +73,8 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.material.icons.extended)
-    implementation("androidx.compose.material:material-icons-extended-android:1.7.2")
-
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0") // Aktuelle Version prüfen
     implementation ("androidx.compose.material3:material3")
     implementation ("androidx.compose.material:material")
 }
