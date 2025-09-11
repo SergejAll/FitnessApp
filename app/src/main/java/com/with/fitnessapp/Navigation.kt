@@ -37,7 +37,7 @@ import kotlinx.serialization.Serializable
 
 
 @Composable
-fun Navigation(navController: NavHostController){
+fun Navigation(navController: NavHostController, modifier: Modifier = Modifier){
     FitnessAppTheme {
         NavHost(
             navController = navController, startDestination = Home

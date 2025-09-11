@@ -42,15 +42,14 @@ fun FitCardWorkoutDragable(
         items = itemsStateFlow.collectAsState().value,
         onSwap = ::swapItems,
     ) { item ->
-        Card(
+        Card (
             modifier = Modifier
                 .clickable {
                     onItemClicked(item)
                 }
         ) {
             Text(
-                text = item.id.toString(),
-                color = MaterialTheme.colorScheme.primary,
+                text = item.title.toString(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
