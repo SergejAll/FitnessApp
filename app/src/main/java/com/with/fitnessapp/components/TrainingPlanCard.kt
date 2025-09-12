@@ -2,7 +2,10 @@ package com.with.fitnessApp.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,13 +18,20 @@ import androidx.compose.ui.unit.dp
 import com.with.fitnessApp.models.Plan // Import the Plan model
 
 @Composable
-fun TrainingPlanCard(plan: Plan) {
+fun TrainingPlanCard(
+    plan: Plan,
+    editMode: Boolean,
+    onDeleteClicked: () -> Unit,
+    onPlanClicked: (Plan) -> Unit // Added lambda for when the plan card is clicked
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(128.dp) // Changed height to 64.dp
-            .padding(horizontal = 16.dp),
-        // The card's containerColor is less relevant now as the image will cover it
+            .height(128.dp)
+            .padding(horizontal = 16.dp)
+            .clickable(enabled = !editMode) { // Card is clickable only when NOT in edit mode
+                onPlanClicked(plan)
+            },
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             // Background Image
@@ -32,42 +42,57 @@ fun TrainingPlanCard(plan: Plan) {
                 contentScale = ContentScale.Crop // Crop to fill bounds
             )
 
-            // Scrim for better text readability (gradient from transparent to black)
+            // Scrim for better text readability
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(Color.Transparent, Color.Black),
-                            startY = 0f, // Start gradient from top (adjust for more top visibility)
-                            endY = Float.POSITIVE_INFINITY // End gradient at the bottom
+                            startY = 0f,
+                            endY = Float.POSITIVE_INFINITY
                         )
                     )
             )
 
             // Content (Text) on top of the image and scrim
-            // With a height of 64.dp, the text might be cramped or overlap.
-            // Consider adjusting padding, text size, or visibility of elements.
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp), // Reduced padding for smaller height
-                verticalArrangement = Arrangement.Bottom // Align text to the bottom
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.Bottom
             ) {
                 Text(
                     plan.title,
-                    style = MaterialTheme.typography.titleMedium, // Adjusted style for smaller space
-                    color = Color.White, // Ensure text is visible on dark scrim
-                    maxLines = 1 // Ensure title doesn't take too much space
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                    maxLines = 1
                 )
-                // Description might be too much for 64.dp, consider removing or making it very short
-                // For now, let's make it smaller and limit lines.
                 Text(
                     plan.description,
-                    style = MaterialTheme.typography.bodySmall, // Adjusted style for smaller space
-                    color = Color.White, // Ensure text is visible on dark scrim
-                    maxLines = 1 // Ensure description doesn't take too much space
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White,
+                    maxLines = 1
                 )
+            }
+
+            // Clickable Delete Area - visible only in edit mode
+            if (editMode) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd) // Align the box to the right, centered vertically
+                        .fillMaxHeight() // Take full height of the card
+                        .width(72.dp) // Define a width for the clickable area
+                        .background(Color.Black.copy(alpha = 0.4f)) // Highlight for the clickable area
+                        .clickable(onClick = onDeleteClicked), // This click is for delete only
+                    contentAlignment = Alignment.Center // Center the icon within this box
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Delete Plan",
+                        tint = Color.White // Ensure icon is visible
+                    )
+                }
             }
         }
     }
