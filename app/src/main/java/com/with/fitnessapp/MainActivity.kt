@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FitnessAppTheme {
+            FitnessAppTheme(dynamicColor = false) {
                 fitnessApp()
                 //Test
             }
