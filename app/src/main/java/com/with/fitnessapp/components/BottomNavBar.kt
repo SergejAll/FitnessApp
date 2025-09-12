@@ -1,6 +1,7 @@
 package com.with.fitnessApp.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ListAlt
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.ListAlt // For Plans
 import androidx.compose.material.icons.filled.Person // For Profile
@@ -8,7 +9,6 @@ import androidx.compose.material.icons.filled.Timeline // For Graphs
 import androidx.compose.material3.* // MaterialTheme is usually part of this wildcard import
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.with.fitnessApp.models.BottomNavItem
@@ -19,7 +19,7 @@ import com.with.fitnessApp.navigation.Screen
 @Composable
 fun BottomNavBar(navController: NavController) {
     val items = listOf(
-        BottomNavItem(label = "Plans", route = Screen.Plans.route, icon = Icons.Filled.ListAlt),
+        BottomNavItem(label = "Plans", route = Screen.Plans.route, icon = Icons.AutoMirrored.Filled.ListAlt),
         BottomNavItem(label = "Calendar", route = Screen.Calendar.route, icon = Icons.Filled.CalendarToday),
         BottomNavItem(label = "Graphs", route = Screen.Graphs.route, icon = Icons.Filled.Timeline),
         BottomNavItem(label = "Profile", route = Screen.Profile.route, icon = Icons.Filled.Person)
