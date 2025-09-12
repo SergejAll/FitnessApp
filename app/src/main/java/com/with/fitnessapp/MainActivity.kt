@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.navigation.compose.rememberNavController
+import com.with.fitnessApp.components.BottomNavBar
 import com.with.fitnessApp.navigation.NavGraph
 import com.with.fitnessApp.ui.theme.FitnessAppTheme
 
