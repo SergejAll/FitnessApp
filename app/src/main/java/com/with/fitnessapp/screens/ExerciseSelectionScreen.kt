@@ -3,23 +3,26 @@ package com.with.fitnessApp.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items 
+import androidx.compose.foundation.lazy.itemsIndexed // Changed from items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Add // For FAB
+import androidx.compose.material.icons.filled.Add 
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.AccessibilityNew
-import androidx.compose.material.icons.filled.Settings // Placeholder for more exercises
+import androidx.compose.material.icons.filled.Settings 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton // For FAB
-import androidx.compose.material3.Icon // For FAB Icon
+import androidx.compose.material3.FloatingActionButton 
+import androidx.compose.material3.Icon 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.with.fitnessApp.common.DraggableItem // Import DraggableItem
 import com.with.fitnessApp.components.AppHeader
 import com.with.fitnessApp.components.ExerciseInfoCard
 import com.with.fitnessApp.models.ExerciseInfo
@@ -46,6 +49,20 @@ fun ExerciseSelectionScreen(
         )
     }
 
+    // Hoisted states for drag-and-drop
+    val draggingItemIndex = remember { mutableStateOf<Int?>(null) }
+    val dragAccumulatedY = remember { mutableStateOf(0f) }
+    val itemHeights = remember { mutableMapOf<Int, Float>() }
+
+    val density = LocalDensity.current
+    val verticalSpacingPx = remember(density) { with(density) { 8.dp.toPx() } } // Assuming 8.dp spacing
+
+    val averageItemHeightPx by remember(itemHeights.toMap()) {
+        derivedStateOf {
+            if (itemHeights.isNotEmpty()) itemHeights.values.average().toFloat() else 0f
+        }
+    }
+
     val decodedExerciseTitles by remember(exerciseTitlesString) {
         derivedStateOf {
             exerciseTitlesString?.takeIf { it.isNotEmpty() }?.split(",")?.map {
@@ -70,6 +87,8 @@ fun ExerciseSelectionScreen(
             ?: "Select Exercise"
     }
 
+    val canDrag = !editMode && decodedExerciseTitles == null
+
     Scaffold(
         topBar = {
             AppHeader(
@@ -79,14 +98,14 @@ fun ExerciseSelectionScreen(
             )
         },
         floatingActionButton = {
-            if (!editMode) { // Only show FAB if not in edit mode
+            if (!editMode) {
                 FloatingActionButton(
-                    modifier = Modifier.padding(bottom = 80.dp), // Added padding
+                    modifier = Modifier.padding(bottom = 80.dp), 
                     onClick = { 
-                        // TODO: Define FAB action, e.g., confirm selection, add new custom exercise
+                        // TODO: Define FAB action
                     }
                 ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add Exercise or Confirm") // Placeholder icon
+                    Icon(Icons.Filled.Add, contentDescription = "Add Exercise or Confirm")
                 }
             }
         }
@@ -98,15 +117,35 @@ fun ExerciseSelectionScreen(
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(displayedExercises, key = { it.id }) { exercise ->
-                // Box for drag-and-drop will be added in Phase 2
-                ExerciseInfoCard(
-                    exerciseInfo = exercise,
-                    editMode = editMode,
-                    onDeleteClicked = { 
-                        allExercises.remove(exercise)
-                    }
-                )
+            itemsIndexed(displayedExercises, key = { _, item -> item.id }) { index, exercise ->
+                DraggableItem(
+                    item = exercise, // The actual exercise data
+                    index = index, // Current index in the displayed (potentially filtered) list
+                    // IMPORTANT: For DraggableItem to reorder, it needs to operate on the source list
+                    // that can be mutated. If displayedExercises is a filtered list, 
+                    // we pass allExercises here, assuming reordering affects the master list.
+                    // The 'index' for DraggableItem in this case should ideally map to the index in 'allExercises'
+                    // if displayedExercises is a subset. This is a simplification for now.
+                    // For correct reordering of a filtered list, a more complex index mapping or
+                    // making displayedExercises mutable and managing its state would be needed.
+                    // CURRENT BEHAVIOR: Reorders within allExercises, visible if not filtered.
+                    list = allExercises, 
+                    draggingItemIndexState = draggingItemIndex,
+                    dragAccumulatedYState = dragAccumulatedY,
+                    itemHeights = itemHeights,
+                    averageItemHeightPx = averageItemHeightPx,
+                    verticalSpacingPx = verticalSpacingPx,
+                    isEnabled = canDrag,
+                    modifier = Modifier.fillMaxWidth()
+                ) { isDragging ->
+                    ExerciseInfoCard(
+                        exerciseInfo = exercise,
+                        editMode = editMode,
+                        onDeleteClicked = { 
+                            allExercises.remove(exercise)
+                        }
+                    )
+                }
             }
         }
     }
