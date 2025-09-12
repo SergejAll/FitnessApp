@@ -7,5 +7,6 @@ data class Plan(
     val id: String = UUID.randomUUID().toString(),
     val title: String,
     val description: String,
-    @DrawableRes val imageResId: Int // Placeholder, replace with actual R.drawable.your_image
+    @DrawableRes val imageResId: Int, // Placeholder, replace with actual R.drawable.your_image
+    val exerciseTitles: List<String> = emptyList() // Added to hold associated exercise titles
 )

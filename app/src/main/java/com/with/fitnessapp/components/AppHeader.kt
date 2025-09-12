@@ -1,34 +1,45 @@
 package com.with.fitnessApp.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack // Correct import for back arrow
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-
-// Removed unused import: import androidx.compose.ui.unit.dp // dp is not directly used here after changes
+// Removed padding imports as they are not directly used on TopAppBar itself in this version.
+// Padding if needed would be applied by the caller or to specific elements.
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppHeader(title: String, onEditClick: () -> Unit) {
+fun AppHeader(
+    title: String, 
+    onBackClicked: (() -> Unit)? = null, // Optional back click handler
+    onEditClick: (() -> Unit)? = null // Optional edit click handler
+) {
     TopAppBar(
         title = { Text(title) },
-        actions = {
-            IconButton(onClick = onEditClick) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit")
+        navigationIcon = {
+            if (onBackClicked != null) {
+                IconButton(onClick = onBackClicked) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
             }
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 16.dp),
+        actions = {
+            if (onEditClick != null) {
+                IconButton(onClick = onEditClick) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit")
+                }
+            }
+        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
             titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary // In case you add one later
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
         )
     )
 }

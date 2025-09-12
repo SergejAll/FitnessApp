@@ -19,7 +19,9 @@ import androidx.navigation.NavController
 import com.with.fitnessApp.components.AppHeader
 import com.with.fitnessApp.components.TrainingPlanCard
 import com.with.fitnessApp.models.Plan
-import com.with.fitnessApp.navigation.Screen
+import com.with.fitnessApp.navigation.Screen // Assuming your Screen object is here
+import java.net.URLEncoder // For encoding URL parameters
+import java.nio.charset.StandardCharsets
 
 const val PLACEHOLDER_IMAGE_RES_ID = android.R.drawable.ic_menu_report_image
 
@@ -29,11 +31,36 @@ fun PlansScreen(navController: NavController) {
     var editMode by remember { mutableStateOf(false) }
     val plans = remember {
         mutableStateListOf(
-            Plan(title = "Plan Alpha", description = "Full body workout for beginners", imageResId = PLACEHOLDER_IMAGE_RES_ID),
-            Plan(title = "Plan Beta", description = "Upper body strength focus", imageResId = PLACEHOLDER_IMAGE_RES_ID),
-            Plan(title = "Plan Gamma", description = "Cardio and endurance training", imageResId = PLACEHOLDER_IMAGE_RES_ID),
-            Plan(title = "Plan Delta", description = "Lower body and core stability", imageResId = PLACEHOLDER_IMAGE_RES_ID),
-            Plan(title = "Plan Epsilon", description = "Flexibility and mobility routine", imageResId = PLACEHOLDER_IMAGE_RES_ID)
+            Plan(
+                title = "Plan Alpha", 
+                description = "Full body workout for beginners", 
+                imageResId = PLACEHOLDER_IMAGE_RES_ID,
+                exerciseTitles = listOf("Push Ups", "Squats") // Sample exercises
+            ),
+            Plan(
+                title = "Plan Beta", 
+                description = "Upper body strength focus", 
+                imageResId = PLACEHOLDER_IMAGE_RES_ID,
+                exerciseTitles = listOf("Push Ups", "Plank") // Sample exercises
+            ),
+            Plan(
+                title = "Plan Gamma", 
+                description = "Cardio and endurance training", 
+                imageResId = PLACEHOLDER_IMAGE_RES_ID,
+                exerciseTitles = listOf("Running") // Sample exercises
+            ),
+            Plan(
+                title = "Plan Delta", 
+                description = "Lower body and core stability", 
+                imageResId = PLACEHOLDER_IMAGE_RES_ID,
+                exerciseTitles = listOf("Squats", "Plank") // Sample exercises
+            ),
+            Plan(
+                title = "Plan Epsilon", 
+                description = "Flexibility and mobility routine", 
+                imageResId = PLACEHOLDER_IMAGE_RES_ID,
+                exerciseTitles = emptyList() // No specific exercises for this sample plan
+            )
         )
     }
 
@@ -52,16 +79,18 @@ fun PlansScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            AppHeader("Trainingspläne") { 
+            AppHeader("Trainingspläne", onEditClick = { 
                 editMode = !editMode // Toggle edit mode
-            }
+            })
         },
         floatingActionButton = {
             if (!editMode) { // Only show FAB if not in edit mode
                 FloatingActionButton(
                     modifier = Modifier.padding(bottom = 80.dp),
                     onClick = { 
-                        navController.navigate(Screen.ExerciseSelection.route)
+                        // Navigate to exercise selection without specific plan context
+                        // Use the base route template as arguments are optional
+                        navController.navigate(Screen.ExerciseSelection.routeTemplate) 
                     }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Plan")
@@ -85,13 +114,13 @@ fun PlansScreen(navController: NavController) {
                         .composed { 
                             Modifier
                                 .graphicsLayer { 
-                                    if (index == draggingItemIndex && !editMode) { // Drag only if not in edit mode
+                                    if (index == draggingItemIndex && !editMode) { 
                                         translationY = dragAccumulatedY
                                         alpha = 0.8f 
                                         shadowElevation = 8.dp.toPx()
                                     }
                                 }
-                                .pointerInput(if (!editMode) Unit else null) { // Disable drag in edit mode
+                                .pointerInput(if (!editMode) Unit else null) { 
                                     detectDragGestures(
                                         onDragStart = {
                                             if (plans.indices.contains(index)) {
@@ -136,7 +165,20 @@ fun PlansScreen(navController: NavController) {
                     TrainingPlanCard(
                         plan = plan,
                         editMode = editMode,
-                        onDeleteClicked = { plans.remove(plan) } // Pass delete action
+                        onDeleteClicked = { plans.remove(plan) },
+                        onPlanClicked = { clickedPlan ->
+                            val encodedPlanTitle = URLEncoder.encode(clickedPlan.title, StandardCharsets.UTF_8.toString())
+                            val exerciseTitlesCsv = clickedPlan.exerciseTitles.joinToString(",") { title ->
+                                URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
+                            }
+                            
+                            val routeBuilder = StringBuilder(Screen.ExerciseSelection.routeTemplate)
+                            routeBuilder.append("?planTitle=$encodedPlanTitle")
+                            if (exerciseTitlesCsv.isNotEmpty()) {
+                                routeBuilder.append("&exerciseTitles=$exerciseTitlesCsv")
+                            }
+                            navController.navigate(routeBuilder.toString())
+                        }
                     )
                 }
             }
