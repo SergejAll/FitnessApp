@@ -12,14 +12,19 @@ sealed class Screen(val route: String) {
     object Calendar : Screen("calendar")
     object Graphs : Screen("graphs")
     object Profile : Screen("profile")
+    object ExerciseSelection : Screen("exercise_selection_screen")
 }
 
 @Composable
 fun NavGraph(navController: NavHostController, padding: PaddingValues) {
     NavHost(navController, startDestination = Screen.Plans.route) {
-        composable(Screen.Plans.route) { PlansScreen() }
+        composable(Screen.Plans.route) { PlansScreen(navController) }
         composable(Screen.Calendar.route) { CalendarScreen() }
         composable(Screen.Graphs.route) { GraphsScreen() }
         composable(Screen.Profile.route) { ProfileScreen() }
+        composable(Screen.ExerciseSelection.route) {
+            ExerciseSelectionScreen(/* any parameters it might need, like another NavController if it navigates further */)
+        }
     }
 }
+

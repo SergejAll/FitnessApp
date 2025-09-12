@@ -15,18 +15,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.with.fitnessApp.components.AppHeader
 import com.with.fitnessApp.components.TrainingPlanCard
-import com.with.fitnessApp.models.Plan // Import the Plan model
-import java.util.UUID // For generating new plan IDs if needed in FAB
+import com.with.fitnessApp.models.Plan
+import com.with.fitnessApp.navigation.Screen
 
-// Placeholder for actual drawable resources
-// You should replace this with R.drawable.your_actual_image
 const val PLACEHOLDER_IMAGE_RES_ID = android.R.drawable.ic_menu_report_image
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlansScreen() {
+fun PlansScreen(navController: NavController) {
+    var editMode by remember { mutableStateOf(false) }
     val plans = remember {
         mutableStateListOf(
             Plan(title = "Plan Alpha", description = "Full body workout for beginners", imageResId = PLACEHOLDER_IMAGE_RES_ID),
@@ -51,16 +51,21 @@ fun PlansScreen() {
     val verticalSpacingPx = remember(density) { with(density) { 8.dp.toPx() } }
 
     Scaffold(
-        topBar = { AppHeader("Trainingspläne") { /* Edit click */ } },
+        topBar = {
+            AppHeader("Trainingspläne") { 
+                editMode = !editMode // Toggle edit mode
+            }
+        },
         floatingActionButton = {
-            FloatingActionButton(
-                modifier = Modifier.padding(bottom = 80.dp),
-                onClick = { 
-                    // Example of adding a new plan
-                    // plans.add(Plan(title = "New Plan ${plans.size + 1}", description = "Newly added plan", imageResId = PLACEHOLDER_IMAGE_RES_ID))
-                 }
-            ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Plan")
+            if (!editMode) { // Only show FAB if not in edit mode
+                FloatingActionButton(
+                    modifier = Modifier.padding(bottom = 80.dp),
+                    onClick = { 
+                        navController.navigate(Screen.ExerciseSelection.route)
+                    }
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Plan")
+                }
             }
         }
     ) { padding ->
@@ -70,7 +75,7 @@ fun PlansScreen() {
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            itemsIndexed(items = plans, key = { _, plan -> plan.id }) { index, plan -> // Use plan.id as key
+            itemsIndexed(items = plans, key = { _, plan -> plan.id }) { index, plan ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -80,13 +85,13 @@ fun PlansScreen() {
                         .composed { 
                             Modifier
                                 .graphicsLayer { 
-                                    if (index == draggingItemIndex) {
+                                    if (index == draggingItemIndex && !editMode) { // Drag only if not in edit mode
                                         translationY = dragAccumulatedY
                                         alpha = 0.8f 
                                         shadowElevation = 8.dp.toPx()
                                     }
                                 }
-                                .pointerInput(Unit) { 
+                                .pointerInput(if (!editMode) Unit else null) { // Disable drag in edit mode
                                     detectDragGestures(
                                         onDragStart = {
                                             if (plans.indices.contains(index)) {
@@ -128,7 +133,11 @@ fun PlansScreen() {
                                 }
                         }
                 ) {
-                    TrainingPlanCard(plan) // Pass the Plan object
+                    TrainingPlanCard(
+                        plan = plan,
+                        editMode = editMode,
+                        onDeleteClicked = { plans.remove(plan) } // Pass delete action
+                    )
                 }
             }
         }
