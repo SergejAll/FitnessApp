@@ -1,6 +1,5 @@
 package com.with.fitnessApp.screens
 
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -9,18 +8,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.with.fitnessApp.common.DraggableItem // Import the new DraggableItem
 import com.with.fitnessApp.components.AppHeader
 import com.with.fitnessApp.components.TrainingPlanCard
 import com.with.fitnessApp.models.Plan
-import com.with.fitnessApp.navigation.Screen // Assuming your Screen object is here
-import java.net.URLEncoder // For encoding URL parameters
+import com.with.fitnessApp.navigation.Screen
+import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 const val PLACEHOLDER_IMAGE_RES_ID = android.R.drawable.ic_menu_report_image
@@ -35,40 +31,42 @@ fun PlansScreen(navController: NavController) {
                 title = "Plan Alpha", 
                 description = "Full body workout for beginners", 
                 imageResId = PLACEHOLDER_IMAGE_RES_ID,
-                exerciseTitles = listOf("Push Ups", "Squats") // Sample exercises
+                exerciseTitles = listOf("Push Ups", "Squats")
             ),
             Plan(
                 title = "Plan Beta", 
                 description = "Upper body strength focus", 
                 imageResId = PLACEHOLDER_IMAGE_RES_ID,
-                exerciseTitles = listOf("Push Ups", "Plank") // Sample exercises
+                exerciseTitles = listOf("Push Ups", "Plank")
             ),
             Plan(
                 title = "Plan Gamma", 
                 description = "Cardio and endurance training", 
                 imageResId = PLACEHOLDER_IMAGE_RES_ID,
-                exerciseTitles = listOf("Running") // Sample exercises
+                exerciseTitles = listOf("Running")
             ),
             Plan(
                 title = "Plan Delta", 
                 description = "Lower body and core stability", 
                 imageResId = PLACEHOLDER_IMAGE_RES_ID,
-                exerciseTitles = listOf("Squats", "Plank") // Sample exercises
+                exerciseTitles = listOf("Squats", "Plank")
             ),
             Plan(
                 title = "Plan Epsilon", 
                 description = "Flexibility and mobility routine", 
                 imageResId = PLACEHOLDER_IMAGE_RES_ID,
-                exerciseTitles = emptyList() // No specific exercises for this sample plan
+                exerciseTitles = emptyList()
             )
         )
     }
 
-    var draggingItemIndex by remember { mutableStateOf<Int?>(null) }
-    var dragAccumulatedY by remember { mutableStateOf(0f) }
+    // Changed from 'var ... by remember' to 'val ... = remember { mutableStateOf(...) }'
+    // to pass MutableState directly to DraggableItem
+    val draggingItemIndex = remember { mutableStateOf<Int?>(null) }
+    val dragAccumulatedY = remember { mutableStateOf(0f) }
 
     val itemHeights = remember { mutableMapOf<Int, Float>() }
-    val averageItemHeightPx by remember(itemHeights.toMap()) {
+    val averageItemHeightPx by remember(itemHeights.toMap()) { // This calculation remains the same
         derivedStateOf {
             if (itemHeights.isNotEmpty()) itemHeights.values.average().toFloat() else 0f
         }
@@ -80,17 +78,15 @@ fun PlansScreen(navController: NavController) {
     Scaffold(
         topBar = {
             AppHeader("Trainingspläne", onEditClick = { 
-                editMode = !editMode // Toggle edit mode
+                editMode = !editMode 
             })
         },
         floatingActionButton = {
-            if (!editMode) { // Only show FAB if not in edit mode
+            if (!editMode) {
                 FloatingActionButton(
                     modifier = Modifier.padding(bottom = 80.dp),
                     onClick = { 
-                        // Navigate to exercise selection without specific plan context
-                        // Use the base route template as arguments are optional
-                        navController.navigate(Screen.ExerciseSelection.routeTemplate) 
+                        navController.navigate(Screen.ExerciseSelection.buildRoute(null, null))
                     }
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Plan")
@@ -105,79 +101,35 @@ fun PlansScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             itemsIndexed(items = plans, key = { _, plan -> plan.id }) { index, plan ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates ->
-                            itemHeights[index] = coordinates.size.height.toFloat()
-                        }
-                        .composed { 
-                            Modifier
-                                .graphicsLayer { 
-                                    if (index == draggingItemIndex && !editMode) { 
-                                        translationY = dragAccumulatedY
-                                        alpha = 0.8f 
-                                        shadowElevation = 8.dp.toPx()
-                                    }
-                                }
-                                .pointerInput(if (!editMode) Unit else null) { 
-                                    detectDragGestures(
-                                        onDragStart = {
-                                            if (plans.indices.contains(index)) {
-                                                draggingItemIndex = index
-                                                dragAccumulatedY = 0f
-                                            }
-                                        },
-                                        onDrag = { change, dragAmount ->
-                                            if (draggingItemIndex == index) {
-                                                change.consume()
-                                                dragAccumulatedY += dragAmount.y 
-                                            }
-                                        },
-                                        onDragEnd = {
-                                            val currentDraggingIdx = draggingItemIndex
-                                            val avgHeight = averageItemHeightPx 
-
-                                            if (currentDraggingIdx != null && avgHeight > 0f) {
-                                                val effectiveItemHeight = avgHeight + verticalSpacingPx
-                                                val movedByItems = (dragAccumulatedY / effectiveItemHeight).toInt()
-                                                val newTargetIndex = (currentDraggingIdx + movedByItems)
-                                                    .coerceIn(0, plans.size - 1)
-
-                                                if (newTargetIndex != currentDraggingIdx) {
-                                                    if (plans.indices.contains(currentDraggingIdx)) {
-                                                        val draggedItem = plans.removeAt(currentDraggingIdx)
-                                                        plans.add(newTargetIndex.coerceIn(0, plans.size), draggedItem)
-                                                    }
-                                                }
-                                            }
-                                            draggingItemIndex = null
-                                            dragAccumulatedY = 0f
-                                        },
-                                        onDragCancel = {
-                                            draggingItemIndex = null
-                                            dragAccumulatedY = 0f
-                                        }
-                                    )
-                                }
-                        }
-                ) {
+                DraggableItem(
+                    item = plan,
+                    index = index,
+                    list = plans,
+                    draggingItemIndexState = draggingItemIndex, // Pass the MutableState object
+                    dragAccumulatedYState = dragAccumulatedY,   // Pass the MutableState object
+                    itemHeights = itemHeights,
+                    averageItemHeightPx = averageItemHeightPx,
+                    verticalSpacingPx = verticalSpacingPx,
+                    isEnabled = !editMode, // Dragging is enabled when not in edit mode
+                    modifier = Modifier.fillMaxWidth() // Apply fillMaxWidth to the DraggableItem itself
+                ) { isDragging -> // content lambda of DraggableItem
                     TrainingPlanCard(
                         plan = plan,
                         editMode = editMode,
                         onDeleteClicked = { plans.remove(plan) },
                         onPlanClicked = { clickedPlan ->
                             val encodedPlanTitle = URLEncoder.encode(clickedPlan.title, StandardCharsets.UTF_8.toString())
-                            val exerciseTitlesCsv = clickedPlan.exerciseTitles.joinToString(",") { title ->
-                                URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
-                            }
+                            val exerciseTitlesCsv = clickedPlan.exerciseTitles
+                                .takeIf { it.isNotEmpty() } 
+                                ?.joinToString(",") { title ->
+                                    URLEncoder.encode(title, StandardCharsets.UTF_8.toString())
+                                }
                             
-                            val routeBuilder = StringBuilder(Screen.ExerciseSelection.routeTemplate)
-                            routeBuilder.append("?planTitle=$encodedPlanTitle")
-                            if (exerciseTitlesCsv.isNotEmpty()) {
-                                routeBuilder.append("&exerciseTitles=$exerciseTitlesCsv")
-                            }
-                            navController.navigate(routeBuilder.toString())
+                            val route = Screen.ExerciseSelection.buildRoute(
+                                planTitle = encodedPlanTitle,
+                                exerciseTitlesCsv = exerciseTitlesCsv
+                            )
+                            navController.navigate(route)
                         }
                     )
                 }
