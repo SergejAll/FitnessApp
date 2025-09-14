@@ -51,7 +51,7 @@ fun ExerciseSelectionScreen(
 
     // Hoisted states for drag-and-drop
     val draggingItemIndex = remember { mutableStateOf<Int?>(null) }
-    val dragAccumulatedY = remember { mutableStateOf(0f) }
+    val dragAccumulatedY = remember { mutableFloatStateOf(0f) }
     val itemHeights = remember { mutableMapOf<Int, Float>() }
 
     val density = LocalDensity.current
@@ -87,7 +87,7 @@ fun ExerciseSelectionScreen(
             ?: "Select Exercise"
     }
 
-    val canDrag = !editMode && decodedExerciseTitles == null
+    val canDrag = !editMode
 
     Scaffold(
         topBar = {
@@ -121,14 +121,6 @@ fun ExerciseSelectionScreen(
                 DraggableItem(
                     item = exercise, // The actual exercise data
                     index = index, // Current index in the displayed (potentially filtered) list
-                    // IMPORTANT: For DraggableItem to reorder, it needs to operate on the source list
-                    // that can be mutated. If displayedExercises is a filtered list, 
-                    // we pass allExercises here, assuming reordering affects the master list.
-                    // The 'index' for DraggableItem in this case should ideally map to the index in 'allExercises'
-                    // if displayedExercises is a subset. This is a simplification for now.
-                    // For correct reordering of a filtered list, a more complex index mapping or
-                    // making displayedExercises mutable and managing its state would be needed.
-                    // CURRENT BEHAVIOR: Reorders within allExercises, visible if not filtered.
                     list = allExercises, 
                     draggingItemIndexState = draggingItemIndex,
                     dragAccumulatedYState = dragAccumulatedY,
