@@ -16,33 +16,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+// Import the new Exercise model
 import com.with.fitnessApp.models.Exercise
 
 @Composable
-fun ExerciseInfoCard(
-    exerciseInfo: Exercise,
+fun ExerciseCard(
+    exercise: Exercise, // Changed from ExerciseInfo to Exercise
     editMode: Boolean = false,
     onDeleteClicked: () -> Unit = {},
-    onCardClicked: () -> Unit // Added this parameter back
+    onCardClicked: () -> Unit // This lambda will now toggle exercise.isDone
 ) {
-    val cardColors = if (exerciseInfo.isDone) {
+    val cardColors = if (exercise.isDone) { // Check exercise.isDone instead of isSelected
         CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f) // Light green tint
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
         )
     } else {
         CardDefaults.cardColors()
     }
-    val borderStroke = if (exerciseInfo.isDone) {
-        BorderStroke(2.dp, MaterialTheme.colorScheme.primary) // Green border
+    val borderStroke = if (exercise.isDone) { // Check exercise.isDone
+        BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
     } else {
-        null // No border when not selected
+        null
     }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp, horizontal = 8.dp)
-            .clickable(onClick = onCardClicked), // Make the whole card clickable for selection
+            .clickable(onClick = onCardClicked), // onCardClicked will toggle exercise.isDone in the ViewModel/Screen
         colors = cardColors,
         border = borderStroke
     ) {
@@ -53,14 +54,14 @@ fun ExerciseInfoCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = exerciseInfo.icon,
-                contentDescription = exerciseInfo.title,
+                imageVector = exercise.icon,
+                contentDescription = exercise.title,
                 modifier = Modifier.size(40.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) { 
-                Text(exerciseInfo.title, style = MaterialTheme.typography.titleMedium)
-                Text("Reps: ${exerciseInfo.reps}", style = MaterialTheme.typography.bodyMedium)
+                Text(exercise.title, style = MaterialTheme.typography.titleMedium)
+                Text("Reps: ${exercise.reps}", style = MaterialTheme.typography.bodyMedium)
             }
 
             if (editMode) {

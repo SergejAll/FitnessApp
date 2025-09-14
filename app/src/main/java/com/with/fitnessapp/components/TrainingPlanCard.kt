@@ -1,13 +1,17 @@
 package com.with.fitnessApp.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done // For completion indication
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -15,59 +19,89 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.with.fitnessApp.models.Plan // Import the Plan model
+import com.with.fitnessApp.models.Plan
 
 @Composable
 fun TrainingPlanCard(
     plan: Plan,
     editMode: Boolean,
     onDeleteClicked: () -> Unit,
-    onPlanClicked: (Plan) -> Unit // Added lambda for when the plan card is clicked
+    onPlanClicked: (Plan) -> Unit
 ) {
+    // Determine if the plan is completed based on its exercises
+    val isPlanCompleted by remember(plan.exercises) {
+        androidx.compose.runtime.derivedStateOf { // Added derivedStateOf for correctness
+            plan.exercises.isNotEmpty() && plan.exercises.all { it.isDone }
+        }
+    }
+
+    val cardBorder = if (isPlanCompleted) {
+        BorderStroke(2.dp, Color.Green.copy(alpha = 0.8f))
+    } else {
+        null
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(128.dp)
             .padding(horizontal = 16.dp)
-            .clickable(enabled = !editMode) { // Card is clickable only when NOT in edit mode
+            .clickable(enabled = !editMode) { 
                 onPlanClicked(plan)
             },
+        border = cardBorder
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            // Background Image
             Image(
                 painter = painterResource(id = plan.imageResId),
-                contentDescription = plan.title, // Accessibility
+                contentDescription = plan.title,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop // Crop to fill bounds
+                contentScale = ContentScale.Crop
             )
 
-            // Scrim for better text readability
+            val scrimBrush = if (isPlanCompleted) {
+                Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Green.copy(alpha = 0.3f), Color.Black.copy(alpha = 0.7f)),
+                    startY = 0f,
+                    endY = Float.POSITIVE_INFINITY
+                )
+            } else {
+                Brush.verticalGradient(
+                    colors = listOf(Color.Transparent, Color.Black),
+                    startY = 0f,
+                    endY = Float.POSITIVE_INFINITY
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color.Black),
-                            startY = 0f,
-                            endY = Float.POSITIVE_INFINITY
-                        )
-                    )
+                    .background(scrimBrush)
             )
 
-            // Content (Text) on top of the image and scrim
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp),
                 verticalArrangement = Arrangement.Bottom
             ) {
-                Text(
-                    plan.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
-                    maxLines = 1
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        plan.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        maxLines = 1,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (isPlanCompleted) {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = "Plan Completed",
+                            tint = Color.Green.copy(alpha = 0.9f),
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                }
                 Text(
                     plan.description,
                     style = MaterialTheme.typography.bodySmall,
@@ -76,21 +110,20 @@ fun TrainingPlanCard(
                 )
             }
 
-            // Clickable Delete Area - visible only in edit mode
             if (editMode) {
                 Box(
                     modifier = Modifier
-                        .align(Alignment.CenterEnd) // Align the box to the right, centered vertically
-                        .fillMaxHeight() // Take full height of the card
-                        .width(72.dp) // Define a width for the clickable area
-                        .background(Color.Black.copy(alpha = 0.4f)) // Highlight for the clickable area
-                        .clickable(onClick = onDeleteClicked), // This click is for delete only
-                    contentAlignment = Alignment.Center // Center the icon within this box
+                        .align(Alignment.CenterEnd) 
+                        .fillMaxHeight() 
+                        .width(72.dp) 
+                        .background(Color.Black.copy(alpha = 0.4f)) 
+                        .clickable(onClick = onDeleteClicked), 
+                    contentAlignment = Alignment.Center 
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Delete,
                         contentDescription = "Delete Plan",
-                        tint = Color.White // Ensure icon is visible
+                        tint = Color.White 
                     )
                 }
             }
