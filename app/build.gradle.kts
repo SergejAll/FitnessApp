@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.protolite.well.known.types)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -92,5 +93,14 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.8.0")
 
     implementation("com.google.android.material:material:1.12.0")
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+
+    implementation(platform("androidx.compose:compose-bom:2023.08.00")) // Or your BOM version
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
 
 }
