@@ -19,8 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-// Import for KeyboardType itself is still needed if other types are used, or for clarity
-import androidx.compose.ui.text.input.KeyboardType 
+import androidx.compose.ui.text.input.KeyboardType // Standard Compose import
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -115,12 +114,10 @@ fun ProfileScreen() {
                 onValueChange = { email = it },
                 label = { Text("Email") },
                 modifier = Modifier.fillMaxWidth(),
-                // Using the specific KeyboardType.Email here
-                keyboardOptions = KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Email),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true
             )
-
-
+            
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
