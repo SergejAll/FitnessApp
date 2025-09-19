@@ -51,18 +51,23 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
+    implementation(platform(libs.androidx.compose.bom)) // BOM - good
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.webkit)
     implementation(libs.androidx.ui.text.google.fonts)
+    // implementation(libs.protolite.well.known.types) // Check if this is truly needed
+
+    // Add DataStore here
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
     implementation(libs.protolite.well.known.types)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
